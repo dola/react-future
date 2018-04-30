@@ -1,0 +1,45 @@
+{
+  "name": "react-future",
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dola/react-future.git"
+  },
+  "author": "Dominic Langenegger",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dola/react-future/issues"
+  },
+  "homepage": "https://github.com/dola/react-future#readme",
+  "dependencies": {
+    "prop-types": "^15.6.1",
+    "react": "^16.4.0-alpha.0911da3",
+    "react-dom": "^16.4.0-alpha.0911da3",
+    "semantic-ui-react": "^0.79.1",
+    "simple-cache-provider": "^0.5.0"
+  },
+  "devDependencies": {
+    "react-scripts": "^2.0.0-next.66cc7a90"
+  },
+  "browserslist": {
+    "development": [
+      "last 2 chrome versions",
+      "last 2 firefox versions",
+      "last 2 edge versions"
+    ],
+    "production": [
+      ">1%",
+      "last 4 versions",
+      "Firefox ESR",
+      "not ie < 11"
+    ]
+  }
+}
