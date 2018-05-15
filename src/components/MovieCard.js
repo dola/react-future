@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Card, Dimmer, Rating, Icon, Loader} from 'semantic-ui-react';
+import {Card, Dimmer, Rating, Icon, Loader, Image} from 'semantic-ui-react';
 import {DateTime} from 'luxon';
 
 import {getImageUrl} from '../api';
-import AsyncImage from '../lib/AsyncImage';
 
 function MovieCard(props) {
   const m = props.movie;
@@ -17,7 +16,7 @@ function MovieCard(props) {
   return (
     <Card centered key={m.id} onClick={onClickMovie}>
       {m.poster_path && (
-        <AsyncImage src={getImageUrl(m.poster_path)} alt={m.title} />
+        <Image src={getImageUrl(m.poster_path)} alt={m.title} />
       )}
       <Dimmer active={props.loading} inverted>
         <Loader>Loading</Loader>

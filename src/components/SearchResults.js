@@ -1,14 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Card, Container, Message} from 'semantic-ui-react';
-import {createResource} from 'simple-cache-provider';
 
-import {searchMovies} from '../api';
 import MovieCard from './MovieCard';
-import withCache from '../lib/withCache';
-import MovieDetail from './MovieDetail';
 
-const moviesSearchResource = createResource(searchMovies);
+import moviesSearchResultJson from '../mock/search.json';
 
 function SearchResults(props) {
   if (props.query.trim() === '') {
@@ -19,7 +15,7 @@ function SearchResults(props) {
     );
   }
 
-  const movies = moviesSearchResource.read(props.cache, props.query).results;
+  const movies = moviesSearchResultJson.results;
   return (
     <Container>
       <Card.Group>
@@ -32,10 +28,6 @@ function SearchResults(props) {
           />
         ))}
       </Card.Group>
-      <div hidden={true}>
-        {/* Preload the first three MovieDetail components */}
-        {movies.slice(0, 3).map(m => <MovieDetail movieId={m.id} />)}
-      </div>
     </Container>
   );
 }
@@ -45,10 +37,9 @@ SearchResults.defaultProps = {
 };
 
 SearchResults.propTypes = {
-  cache: PropTypes.object.isRequired,
   query: PropTypes.string.isRequired,
   loadingId: PropTypes.number,
   onSelectMovie: PropTypes.func.isRequired,
 };
 
-export default withCache(SearchResults);
+export default SearchResults;

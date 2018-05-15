@@ -3,7 +3,6 @@ import {Input, Icon, Menu, Button} from 'semantic-ui-react';
 
 import SearchResults from './SearchResults';
 import MovieDetail from './MovieDetail';
-import AsyncValue from '../lib/AsyncValue';
 
 class Home extends React.PureComponent {
   constructor(props) {
@@ -32,7 +31,7 @@ class Home extends React.PureComponent {
     this.setState({detailId: null, showDetail: false});
   }
 
-  renderDetail(movieId) {
+  renderDetail() {
     return (
       <>
         <Menu size="large">
@@ -48,7 +47,10 @@ class Home extends React.PureComponent {
     );
   }
 
-  renderList(asyncQuery, asyncShowDetail) {
+  renderList(
+    asyncQuery = this.state.query,
+    asyncShowDetail = this.state.showDetail,
+  ) {
     const isSearching = asyncQuery !== this.state.query;
     const isLoadingDetail = asyncShowDetail !== this.state.showDetail;
     return (
@@ -75,21 +77,9 @@ class Home extends React.PureComponent {
   }
 
   render() {
-    const asyncState = {
-      query: this.state.query,
-      showDetail: this.state.showDetail,
-    };
-    return (
-      <AsyncValue
-        value={asyncState}
-        defaultValue={{query: '', showDetail: false}}>
-        {asyncState =>
-          asyncState.showDetail && this.state.detailId
-            ? this.renderDetail(this.state.detailId)
-            : this.renderList(asyncState.query, asyncState.showDetail)
-        }
-      </AsyncValue>
-    );
+    return this.state.showDetail && this.state.detailId
+      ? this.renderDetail()
+      : this.renderList();
   }
 }
 

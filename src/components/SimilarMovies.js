@@ -1,16 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Container, Card, Header} from 'semantic-ui-react';
-import {createResource} from 'simple-cache-provider';
 
-import withCache from '../lib/withCache';
-import {fetchSimilarMovies} from '../api';
+import similarMoviesJson from '../mock/similar.json';
 import MovieCard from './MovieCard';
 
-const similarMoviesResource = createResource(fetchSimilarMovies);
-
 function SimilarMovies(props) {
-  const similarMovies = similarMoviesResource.read(props.cache, props.movieId);
+  const similarMovies = similarMoviesJson;
   const first8similarMovies = similarMovies.results.slice(0, 8);
 
   return (
@@ -31,4 +27,4 @@ SimilarMovies.propTypes = {
   movieId: PropTypes.number.isRequired,
 };
 
-export default withCache(SimilarMovies);
+export default SimilarMovies;

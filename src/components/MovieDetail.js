@@ -5,28 +5,24 @@ import {
   Rating,
   Container,
   Header,
-  Loader,
   Divider,
   Label,
   List,
   Statistic,
+  Image,
 } from 'semantic-ui-react';
-import {createResource} from 'simple-cache-provider';
 import numeral from 'numeral';
 import {DateTime} from 'luxon';
 import get from 'lodash.get';
 
-import {getImageUrl, fetchMovie} from '../api';
-import withCache from '../lib/withCache';
+import {getImageUrl} from '../api';
 import SimilarMovies from './SimilarMovies';
-import AsyncImage from '../lib/AsyncImage';
-import Timeout from '../lib/Timeout';
+
+import movieDetailJson from '../mock/detail.json';
 
 function getIMDbUrl(movie) {
   return `https://www.imdb.com/title/${movie.imdb_id}`;
 }
-
-const movieDetailResource = createResource(fetchMovie);
 
 class MovieDetail extends React.Component {
   componentDidMount() {
@@ -35,7 +31,7 @@ class MovieDetail extends React.Component {
 
   render() {
     const props = this.props;
-    const movie = movieDetailResource.read(props.cache, props.movieId);
+    const movie = movieDetailJson;
 
     const releaseDate = DateTime.fromISO(movie.release_date);
     return (
@@ -43,7 +39,7 @@ class MovieDetail extends React.Component {
         <Grid centered stackable>
           <Grid.Column width={4} textAlign="center">
             {movie.poster_path && (
-              <AsyncImage
+              <Image
                 src={getImageUrl(movie.poster_path)}
                 className="ui image centered"
                 alt={movie.title}
@@ -94,9 +90,7 @@ class MovieDetail extends React.Component {
               </List>
             </Container>
             <Divider hidden />
-            <Timeout ms={1000} fallback={<Loader active inline="centered" />}>
-              <SimilarMovies movieId={props.movieId} />
-            </Timeout>
+            <SimilarMovies movieId={props.movieId} />
           </Grid.Column>
         </Grid>
       </Container>
@@ -106,7 +100,6 @@ class MovieDetail extends React.Component {
 
 MovieDetail.propTypes = {
   movieId: PropTypes.number.isRequired,
-  cache: PropTypes.object.isRequired,
 };
 
-export default withCache(MovieDetail);
+export default MovieDetail;
