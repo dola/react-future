@@ -1,8 +1,9 @@
 import React from 'react';
-import {Input, Icon, Menu, Container, Button} from 'semantic-ui-react';
+import {Input, Icon, Menu, Button} from 'semantic-ui-react';
 
 import SearchResults from './SearchResults';
 import MovieDetail from './MovieDetail';
+import AsyncValue from '../lib/AsyncValue';
 
 class Home extends React.PureComponent {
   constructor(props) {
@@ -10,51 +11,84 @@ class Home extends React.PureComponent {
     this.state = {
       query: '',
       detailId: null,
+      showDetail: false,
     };
     this.onSelectMovie = this.onSelectMovie.bind(this);
+    this.onNavigateBack = this.onNavigateBack.bind(this);
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (nextState.detailId !== this.state.detailId) {
-      window.scrollTo(0, 0);
-    }
+  onSearchChange(query) {
+    this.setState({query});
   }
 
   onSelectMovie(movieId) {
     this.setState({
       detailId: movieId,
+      showDetail: true,
     });
   }
 
-  render() {
+  onNavigateBack() {
+    this.setState({detailId: null, showDetail: false});
+  }
+
+  renderDetail(movieId) {
     return (
       <>
-        <Menu>
-          {this.state.detailId ? (
-            <Menu.Item onClick={() => this.setState({detailId: null})}>
-              <Button icon labelPosition="left">
-                <Icon name="left arrow" />
-                Back
-              </Button>
-            </Menu.Item>
-          ) : (
-            <Menu.Item>
-              <Input
-                icon="search"
-                placeholder="Search Movie..."
-                value={this.state.query}
-                onChange={(e, p) => this.setState({query: p.value})}
-              />
-            </Menu.Item>
-          )}
+        <Menu size="large">
+          <Menu.Item onClick={this.onNavigateBack}>
+            <Button icon labelPosition="left">
+              <Icon name="left arrow" />
+              Back
+            </Button>
+          </Menu.Item>
         </Menu>
-
-        {this.state.detailId ? (
-          <MovieDetail movieId={this.state.detailId} />
-        ) : (
-          <SearchResults onSelectMovie={this.onSelectMovie} />
-        )}
+        <MovieDetail movieId={this.state.detailId} />
       </>
+    );
+  }
+
+  renderList(asyncQuery, asyncShowDetail) {
+    const isSearching = asyncQuery !== this.state.query;
+    const isLoadingDetail = asyncShowDetail !== this.state.showDetail;
+    return (
+      <>
+        <Menu size="large">
+          <Menu.Item>
+            <Input
+              icon="search"
+              placeholder="Search Movie..."
+              value={this.state.query}
+              onChange={(e, p) => this.onSearchChange(p.value)}
+              loading={isSearching}
+              size="big"
+            />
+          </Menu.Item>
+        </Menu>
+        <SearchResults
+          query={asyncQuery}
+          loadingId={isLoadingDetail ? this.state.detailId : null}
+          onSelectMovie={this.onSelectMovie}
+        />
+      </>
+    );
+  }
+
+  render() {
+    const asyncState = {
+      query: this.state.query,
+      showDetail: this.state.showDetail,
+    };
+    return (
+      <AsyncValue
+        value={asyncState}
+        defaultValue={{query: '', showDetail: false}}>
+        {asyncState =>
+          asyncState.showDetail && this.state.detailId
+            ? this.renderDetail(this.state.detailId)
+            : this.renderList(asyncState.query, asyncState.showDetail)
+        }
+      </AsyncValue>
     );
   }
 }

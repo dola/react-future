@@ -1,38 +1,54 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Card, Container, Image, Icon, Rating} from 'semantic-ui-react';
+import {Card, Container, Message} from 'semantic-ui-react';
+import {createResource} from 'simple-cache-provider';
 
-import searchJsonResponse from '../mock/search.json';
-import {getImageUrl} from '../api';
+import {searchMovies} from '../api';
+import MovieCard from './MovieCard';
+import withCache from '../lib/withCache';
+import MovieDetail from './MovieDetail';
+
+const moviesSearchResource = createResource(searchMovies);
 
 function SearchResults(props) {
-  const movies = searchJsonResponse.results;
+  if (props.query.trim() === '') {
+    return (
+      <Container>
+        <Message>Please enter a search term</Message>
+      </Container>
+    );
+  }
+
+  const movies = moviesSearchResource.read(props.cache, props.query).results;
   return (
     <Container>
       <Card.Group>
         {movies.map(m => (
-          <Card onClick={() => props.onSelectMovie(m.id)} centered key={m.id}>
-            <Image src={getImageUrl(m.poster_path)} />
-            <Card.Content>
-              <Card.Header>{m.title}</Card.Header>
-              <Card.Meta>
-                <Rating rating={m.vote_average} maxRating={10} disabled />
-              </Card.Meta>
-              <Card.Description>{m.overview}</Card.Description>
-            </Card.Content>
-            <Card.Content extra>
-              <Icon name="calendar" />
-              Released on {m.release_date}
-            </Card.Content>
-          </Card>
+          <MovieCard
+            movie={m}
+            onClick={props.onSelectMovie}
+            loading={m.id === props.loadingId}
+            key={m.id}
+          />
         ))}
       </Card.Group>
+      <div hidden={true}>
+        {/* Preload the first three MovieDetail components */}
+        {movies.slice(0, 3).map(m => <MovieDetail movieId={m.id} />)}
+      </div>
     </Container>
   );
 }
 
+SearchResults.defaultProps = {
+  loadingId: null,
+};
+
 SearchResults.propTypes = {
+  cache: PropTypes.object.isRequired,
+  query: PropTypes.string.isRequired,
+  loadingId: PropTypes.number,
   onSelectMovie: PropTypes.func.isRequired,
 };
 
-export default SearchResults;
+export default withCache(SearchResults);

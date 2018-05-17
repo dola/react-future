@@ -1,37 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Container, Card, Icon, Image, Header, Rating} from 'semantic-ui-react';
+import {Container, Card, Header} from 'semantic-ui-react';
+import {createResource} from 'simple-cache-provider';
 
-import similarMoviesJson from '../mock/similar.json';
-import {getImageUrl} from '../api';
+import withCache from '../lib/withCache';
+import {fetchSimilarMovies} from '../api';
+import MovieCard from './MovieCard';
+
+const similarMoviesResource = createResource(fetchSimilarMovies);
 
 function SimilarMovies(props) {
-  const similarMovies = similarMoviesJson.results.slice(0, 5);
+  const similarMovies = similarMoviesResource.read(props.cache, props.movieId);
+  const first8similarMovies = similarMovies.results.slice(0, 8);
+
   return (
-    <Container>
+    <Container text>
       <Header as="h3" dividing>
         Similar Movies
       </Header>
       <Card.Group doubling itemsPerRow={4}>
-        {similarMovies.map(m => (
-          <Card centered key={m.id}>
-            <Image src={getImageUrl(m.poster_path)} />
-            <Card.Content>
-              <Card.Header>{m.title}</Card.Header>
-              <Card.Meta>
-                <Rating
-                  rating={Math.ceil(m.vote_average / 2)}
-                  maxRating={5}
-                  disabled
-                  size="tiny"
-                />
-              </Card.Meta>
-            </Card.Content>
-            <Card.Content extra>
-              <Icon name="calendar" />
-              {m.release_date}
-            </Card.Content>
-          </Card>
+        {first8similarMovies.map(m => (
+          <MovieCard movie={m} compact key={m.id} />
         ))}
       </Card.Group>
     </Container>
@@ -42,4 +31,4 @@ SimilarMovies.propTypes = {
   movieId: PropTypes.number.isRequired,
 };
 
-export default SimilarMovies;
+export default withCache(SimilarMovies);

@@ -20,6 +20,9 @@
   },
   "homepage": "https://github.com/dola/react-future#readme",
   "dependencies": {
+    "lodash.get": "^4.4.2",
+    "luxon": "^1.2.0",
+    "numeral": "^2.0.6",
     "prop-types": "^15.6.1",
     "react": "^16.4.0-alpha.0911da3",
     "react-dom": "^16.4.0-alpha.0911da3",
