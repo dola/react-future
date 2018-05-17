@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Card, Container, Message} from 'semantic-ui-react';
-import {createResource} from 'simple-cache-provider';
+import { Card, Container, Message } from 'semantic-ui-react';
+import { createResource } from 'simple-cache-provider';
 
-import {searchMovies} from '../api';
+import { searchMovies } from '../api';
 import MovieCard from './MovieCard';
 import withCache from '../lib/withCache';
 import MovieDetail from './MovieDetail';
@@ -32,10 +32,9 @@ function SearchResults(props) {
           />
         ))}
       </Card.Group>
-      <div hidden={true}>
-        {/* Preload the first three MovieDetail components */}
+      {/* <div hidden={true}>
         {movies.slice(0, 3).map(m => <MovieDetail movieId={m.id} />)}
-      </div>
+      </div> */}
     </Container>
   );
 }

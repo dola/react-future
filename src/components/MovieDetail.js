@@ -11,12 +11,12 @@ import {
   List,
   Statistic,
 } from 'semantic-ui-react';
-import {createResource} from 'simple-cache-provider';
+import { createResource } from 'simple-cache-provider';
 import numeral from 'numeral';
-import {DateTime} from 'luxon';
+import { DateTime } from 'luxon';
 import get from 'lodash.get';
 
-import {getImageUrl, fetchMovie} from '../api';
+import { getImageUrl, fetchMovie } from '../api';
 import withCache from '../lib/withCache';
 import SimilarMovies from './SimilarMovies';
 import AsyncImage from '../lib/AsyncImage';
@@ -94,9 +94,7 @@ class MovieDetail extends React.Component {
               </List>
             </Container>
             <Divider hidden />
-            <Timeout ms={1000} fallback={<Loader active inline="centered" />}>
-              <SimilarMovies movieId={props.movieId} />
-            </Timeout>
+            <SimilarMovies movieId={props.movieId} />
           </Grid.Column>
         </Grid>
       </Container>
